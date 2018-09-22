@@ -2,24 +2,6 @@
 const config = require('../../config/config');
 const MODULE_PREFIX_NAME = 'MMM-DynamicWebview';
 
-const collectUniqueDynamicWebviews = () => {
-	Log.log('Collecting Unique DynamicWebviews');
-	const unique = new Set();
-	const result = [];
-
-	const modules = ((config || {}).modules) || [];
-	modules.forEach((module) => {
-		const moduleName = (module || {}).module || '';
-		if(moduleName.startsWith(MODULE_PREFIX_NAME) &&
-		   !unique.has(moduleName)) {
-			unique.add(moduleName);
-			result.push(module);
-		}
-	});
-	Log.log(`Found ${result.length} dynamic webview modules: ${Array.from(unique.values()).join(', ')}`);
-	return result;
-};
-
 const mmmWebview = {
 	// Default module config.
 	defaults: {
@@ -40,25 +22,25 @@ const mmmWebview = {
 	},
 
 	start: function () {
-		Log.log('Starting Dynamic module');
-		self = this;
+		var self = this;
+		Log.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
 		setInterval( function () { 
 			self.updateDom(1000);
-			}, this.config.updateInterval);
+			}, self.config.updateInterval);
 	},
 	resume: function() {
-		Log.log("Resuming Dynamic module");
+		var self = this;
+		Log.log(`Resuming Dynamic module ${self.name} ${self.identifier}`);
 		return this.getDom();
 	},
 
 	// Override dom generator.
 	getDom: function() {
-		Log.log("getDom Dynamic module");
+		var self = this;
+		Log.log(`getDom Dynamic module ${self.name} ${self.identifier}`);
 		var webview = document.createElement("webview");
-		webview.setAttribute('src', this.config.getURL());
-		const { attributes } = this.config;
-		if (attributes.id) webview.setAttribute('id', attributes.id);
-		if (attributes.name) webview.setAttribute('name', attributes.name);
+		webview.setAttribute('src', self.config.getURL());
+		const { attributes } = self.config;
 		if (attributes.style) {
 			if (attributes.style.display) webview.style.display = attributes.style.display;
 			if (attributes.style.width) webview.style.width = attributes.style.width; 
@@ -80,21 +62,8 @@ const mmmWebview = {
 		if (attributes.webpreferences) webview.setAttribute('webpreferences', attributes.webpreferences);
 		if (attributes.enableblinkfeatures) webview.setAttribute('enableblinkfeatures', attributes.enableblinkfeatures);
 		if (attributes.disableblinkfeatures) webview.setAttribute('disableblinkfeatures', attributes.disableblinkfeatures);
-		Log.log(`Dynamic Webview: ${webview.toString()}`);
+		Log.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
 		return webview;
 	},
 };
-const validateConfigSupportsWebview = () => {
-	const configuredNodeIntegration = ((config || {}).electronOptions || {}).nodeIntegration || false
-	if (!configuredNodeIntegration) {
-		const msg = 'MMM-DynamicWebview will not function when electronOptions.nodeIntegration is false';
-		Log.error(msg)
-		throw new Error(msg);
-	}
-}
-const dynamicWebviewModules = collectUniqueDynamicWebview();
-dynamicWebviewModules.forEach((module, index) => {
-	if (index === 0) validateConfigSupportsWebview();
-	Log.info(`Registering: ${module.module}`);
-	Module.register(module.module, mmmWebview);
-});
+Module.register(MODULE_NAME, mmmWebview);

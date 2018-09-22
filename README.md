@@ -1,10 +1,6 @@
 # Module: MMM-DynamicWebview
-Based off `MMM-IFrame` module for MagicMirror. The use of webviews had plenty of security issues resulting in it simply not working all the time. Plus you could only define 1 with it cycling around various urls... I wanted to have 1 url on 1 page, another on another, .... a dynamic configuration.
-
-The [webview](https://github.com/electron/electron/blob/master/docs/api/webview-tag.md), however, does not suffer from these problems as it is rendered separately. So you get iframe behavior in a secure way.  
+The use of IFrames had plenty of security issues resulting in it simply not working all the time.  The [webview](https://github.com/electron/electron/blob/master/docs/api/webview-tag.md), however, does not suffer from these problems as it is rendered separately. So you get iframe behavior in a secure way.  
 NOTE: you must override `nodeIntegration: true` in the `electronOptions` in your `config.js`.
-
-The module reads your configuration, rips out all the `MMM-DynamicWebview*` module names, and registers them all as modules of that name. The idea is you could have `MMM-DynamicWebview-map`  `MMM-DynamicWebview-whatever`... you get the picture.
 
 ## Use case examples
 
@@ -25,14 +21,12 @@ Just got to the video you want. Click share and embed and pull out the url and a
 To use this module, add it to the modules array in the `config/config.js` file:
 ````javascript
 {
-	module: 'MMM-webview',
+	module: 'MMM-DynamicWebview',
 	position: 'bottom_bar',	// This can be any of the regions.
 	config: {
 		updateInterval: 0.5 * 60 * 1000,
 		getURL: () => "http://magicmirror.builders/",
 		attributes: {
-			id: "mirrorBuilders",
-			name: "mirrorBuilders",
 			style: {
 				display: 'flex',
 				width: '100%',
@@ -87,7 +81,6 @@ The following properties can be configured:
 
 ````javascript
 	attributes: {
-		id: "mirrorBuilders",
 		name: "mirrorBuilders",
 		style: {
 			display: 'flex',
