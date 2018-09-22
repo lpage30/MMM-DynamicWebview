@@ -3,6 +3,7 @@ const config = require('../../config/config');
 const MODULE_PREFIX_NAME = 'MMM-DynamicWebview';
 
 const collectUniqueDynamicWebviews = () => {
+	Log.log('Collecting Unique DynamicWebviews');
 	const unique = new Set();
 	const result = [];
 
@@ -15,6 +16,7 @@ const collectUniqueDynamicWebviews = () => {
 			result.push(module);
 		}
 	});
+	Log.log(`Found ${result.length} dynamic webview modules: ${Array.from(unique.values()).join(', ')}`);
 	return result;
 };
 
@@ -38,18 +40,20 @@ const mmmWebview = {
 	},
 
 	start: function () {
+		Log.log('Starting Dynamic module');
 		self = this;
 		setInterval( function () { 
 			self.updateDom(1000);
 			}, this.config.updateInterval);
 	},
 	resume: function() {
-		console.log("Resuming");
+		Log.log("Resuming Dynamic module");
 		return this.getDom();
 	},
 
 	// Override dom generator.
 	getDom: function() {
+		Log.log("getDom Dynamic module");
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', this.config.getURL());
 		const { attributes } = this.config;
@@ -76,17 +80,21 @@ const mmmWebview = {
 		if (attributes.webpreferences) webview.setAttribute('webpreferences', attributes.webpreferences);
 		if (attributes.enableblinkfeatures) webview.setAttribute('enableblinkfeatures', attributes.enableblinkfeatures);
 		if (attributes.disableblinkfeatures) webview.setAttribute('disableblinkfeatures', attributes.disableblinkfeatures);
-		console.dir(webview);
+		Log.log(`Dynamic Webview: ${webview.toString()}`);
 		return webview;
 	},
 };
 const validateConfigSupportsWebview = () => {
 	const configuredNodeIntegration = ((config || {}).electronOptions || {}).nodeIntegration || false
-	if (!configuredNodeIntegration) throw new Error('MMM-DynamicWebview will not function when electronOptions.nodeIntegration is false');
+	if (!configuredNodeIntegration) {
+		const msg = 'MMM-DynamicWebview will not function when electronOptions.nodeIntegration is false';
+		Log.error(msg)
+		throw new Error(msg);
+	}
 }
 const dynamicWebviewModules = collectUniqueDynamicWebview();
 dynamicWebviewModules.forEach((module, index) => {
 	if (index === 0) validateConfigSupportsWebview();
-	
+	Log.info(`Registering: ${module.module}`);
 	Module.register(module.module, mmmWebview);
 });
