@@ -1,8 +1,7 @@
 /* global Module */
 const config = require('../../config/config');
-const MODULE_PREFIX_NAME = 'MMM-DynamicWebview';
 
-const mmmWebview = {
+Module.register('MMM-DynamicWebview', {
 	// Default module config.
 	defaults: {
 		updateInterval: 0.5 * 60 * 1000,
@@ -65,5 +64,5 @@ const mmmWebview = {
 		Log.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
 		return webview;
 	},
-};
-Module.register(MODULE_NAME, mmmWebview);
+});
+
