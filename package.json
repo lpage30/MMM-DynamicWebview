@@ -1,0 +1,29 @@
+{
+  "name": "Magic-Mirror-Module-MMM-DynamicWebview",
+  "version": "1.0.0",
+  "description": "Dynamic Webview module for Magic Mirror.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lpage30/MMM-DynamicWebview.git"
+  },
+  "keywords": [
+    "magic mirror",
+    "smart mirror",
+    "iframe",
+    "webview",
+    "module"
+  ],
+  "author": "Albert Wong",
+  "contributor": "lpage30",
+  "contributors": "https://github.com/lpage30/MMM-DynamicWebview/graphs/contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lpage30/MMM-DynamicWebview/issues"
+  },
+  "homepage": "https://github.com/lpage30/MMM-DynamicWebview#readme",
+  "dependencies": {
+    "body-parser": "latest",
+    "express": "latest",
+    "request": "latest"
+  }
+}
