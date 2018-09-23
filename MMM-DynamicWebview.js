@@ -1,7 +1,7 @@
 Module.register('MMM-DynamicWebview', {
 	// Default module config.
 	defaults: {
-		updateInterval: 0.5 * 60 * 1000,
+		updateInterval: 30 * 1000,
 		getURL: () => "http://magicmirror.builders/",
 		// see: https://electronjs.org/docs/api/webview-tag
 		attributes: {
@@ -18,7 +18,10 @@ Module.register('MMM-DynamicWebview', {
 	},
 	resume: function() {
 		var self = this;
-		self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
+		self.updateDom();
+		if (self.config.updateInterval) {
+			self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
+		}
 	},
 	suspend: function() {
 		const intervalId = this.intervalId;
@@ -28,7 +31,10 @@ Module.register('MMM-DynamicWebview', {
 	start: function() {
 		var self = this;
 		Log.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
-		self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
+		self.updateDom();
+		if (self.config.updateInterval) {
+			self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
+		}
 	},
 		// Override dom generator.
 	getDom: function() {
@@ -60,7 +66,7 @@ Module.register('MMM-DynamicWebview', {
 			if (attributes.enableblinkfeatures) webview.setAttribute('enableblinkfeatures', attributes.enableblinkfeatures);
 			if (attributes.disableblinkfeatures) webview.setAttribute('disableblinkfeatures', attributes.disableblinkfeatures);
 		}
-		Log.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
+		Log.log(`${self.name} ${self.identifier} Webview: ${webview.outerHTML}`);
 		return webview;
 	},
 });
