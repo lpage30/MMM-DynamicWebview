@@ -19,22 +19,22 @@ Module.register('MMM-DynamicWebview', {
 			},
 		},
 	},
-	resume: () => {
+	resume: function() {
 		var self = this;
 		self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
 	},
-	suspend: () => {
+	suspend: function() {
 		const intervalId = this.intervalId;
 		this.intervalId = null;
 		if (intervalId) clearInterval(intervalId);
 	},
-	start: () => {
+	start: function() {
 		var self = this;
 		Log.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
 		self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
 	},
 		// Override dom generator.
-	getDom: () => {
+	getDom: function() {
 		var self = this;
 		Log.log(`getDom Dynamic module ${self.name} ${self.identifier}`);
 		var webview = document.createElement("webview");
