@@ -30,13 +30,13 @@ Module.register('MMM-DynamicWebview', {
 	},
 	start: function() {
 		var self = this;
-		Log.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
+		console.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
 		self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
 	},
 		// Override dom generator.
 	getDom: function() {
 		var self = this;
-		Log.log(`getDom Dynamic module ${self.name} ${self.identifier}`);
+		console.log(`getDom Dynamic module ${self.name} ${self.identifier}`);
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', self.config.getURL());
 		if (self.config.attributes) {
@@ -63,7 +63,7 @@ Module.register('MMM-DynamicWebview', {
 			if (attributes.enableblinkfeatures) webview.setAttribute('enableblinkfeatures', attributes.enableblinkfeatures);
 			if (attributes.disableblinkfeatures) webview.setAttribute('disableblinkfeatures', attributes.disableblinkfeatures);
 		}
-		Log.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
+		console.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
 		return webview;
 	},
 });
