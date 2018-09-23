@@ -34,7 +34,7 @@ webview {
 I did some adjustments based on the page I was loading as in my application the rendered webview was 'too wide' and then shifted too much to the left.
 
 ## Using the module
-This module is kinda simple basically creates and configures the webview element to have a src obtained by calling the configured `getURL()` function.
+This module is simple. It basically creates and configures the webview element to have a src obtained by calling the configured `getURL()` function, and all its styling is obtained from the aforementioned ***custom css*** class. I have chosen not to expose the other *many* webview options as some are ill-advised, and others are problemmatic; css class definition approach has so far proven to be the most consistent.
 
 To use this module, add it to the modules array in the `config/config.js` file:
 ````javascript
@@ -81,3 +81,6 @@ The following properties can be configured:
 		</td>
 	</tr>		
 </table>
+
+## Known Issues
+- The webviews rendered by this module in MagicMirror only render in the electron browser (used by MagicMirror). I have not been able to remotely render these views in Chrome or Firefox when 'browsing' to my MagicMirror server. Many online comments indicate that webview is also considered a potential security risk (which I've waived as I control my internal mirror). I am certain, however, that you could start chrome or firefox up in a way (command line args) so as to then browse and see these webviews. As a rule I don't like to have my solutions require some hokey browser setting, but for a dumb page on a R-Pi for personal use.. I don't care.
