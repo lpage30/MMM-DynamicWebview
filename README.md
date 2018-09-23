@@ -1,53 +1,50 @@
-# Module: MMM-DynamicWebview
-The use of IFrames had plenty of security issues resulting in it simply not working all the time.  The [webview](https://github.com/electron/electron/blob/master/docs/api/webview-tag.md), however, does not suffer from these problems as it is rendered separately. So you get iframe behavior in a secure way.  
-NOTE: you must override `nodeIntegration: true` in the `electronOptions` in your `config.js`.
+# Module: MMM-Webview
+IFrames have some security issues (depending on the url used). The [webview](https://github.com/electron/electron/blob/master/docs/api/webview-tag.md), however, does not suffer from these problems as it is rendered separately. So you get iframe behavior in a secure way.  There are several quirks associated with using the webview, but most of these can be overcome, and your MagicMirror will render those pages that could not be rendered using an IFRAME.
 
-## Use case examples
-
-### Nest Camera streaming
-As of right now, Nest Camera only support streaming to webview when the camera feed is set to public.   When you set it to public, you'll get a live URL and a webview embedded URL (should look like https://video.nest.com/embedded/live/wSbs3mRsOF?autoplay=1). Put that url into the config.url[].  For more info, check out this thread https://nestdevelopers.io/t/is-there-a-way-to-get-nest-camera-streams-in-an-webview/813. 
-
-### D-Link Camera streaming
-D-Link cameras streams can be easily embedded into an webview.  Some cameras require a username and password.  You can construct a URL that looks like this http://admin:password@10.0.1.7/mjpeg.cgi and put it in the config.url[]. For mroe info, check out http://forums.dlink.com/index.php?PHPSESSID=ag1ne0jgnnl7uft3s1ssts14p4&topic=59173.0.
-
-### Twitch.tv streaming
-Just go to the channel you want and click on share and cut and paste the embed src URL (eg. https://player.twitch.tv/?channel=feedbias_int). For more info, check out https://dev.twitch.tv/docs/v5/guides/embed-video/
-
-### Youtube streaming
-Just got to the video you want. Click share and embed and pull out the url and add the autoplay parameter (eg.   https://www.youtube.com/embed/yw_nqzVfxFQ?autoplay=1).  
+## Setting up to use this Module
+There are a 2 things you will need to do in your overall configuration so you can then render these webview(s).
+1. ***Electron Options***
+Referring to the [MagicMirror Configuration](https://github.com/MichMich/MagicMirror#configuration), you will need to add the `nodeIntegration: true` to `electronOptions`.  I am uncertain why this is needed (I have plenty of educated guesses), but if this value is false, things don't render.
+````javascript
+	electronOptions: {
+	/*  Note: MagicMirror uses Object.assign() to 'override' its defaults. In order to ensure
+	    you get the defaults for webPreferences along with your 'override' you must fully define 
+	    webPreferences to have all the MagicMirror defaults along with your override (nodeIntegration).
+	    Thankfully, MagicMirror's default for webPreferences is zoomFactor: 1
+	    and we are overriding the other default nodeIntegration
+	*/
+		webPreferences: {
+			zoomFactor: 1, // default is actually zoomFactor: config.zoom, and zoom's default is 1.
+			nodeIntegration: true, // the default for this is false. we are overriding this.
+	},
+````
+2. ***Custom CSS***
+This is a kinda optional. Things do render without it, but the sizing is all crap. Basically what I am saying here is use CSS to style your webview; do not use the webview inline style. There are PLENTY of references/complaints online about how the webview isn't rendering fully as specified in the inline style. I wanted my entire screen to render as the webview. I finally came across a [reference](https://github.com/electron/electron/issues/8277) that presented a solution that actually worked (I hate css). This CSS did the trick; put this in your MagicMirror custom css `css/custom.css`.
+````css
+webview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90%;
+  height: 100%;
+  margin: 0 0 0 2em;
+  display: inline-flex;
+}
+````
+I did some adjustments based on the page I was loading as in my application the rendered webview was 'too wide' and then shifted too much to the left.
 
 ## Using the module
+This module is kinda simple basically creates and configures the webview element to have a src obtained by calling the configured `getURL()` function.
 
 To use this module, add it to the modules array in the `config/config.js` file:
 ````javascript
 {
-	module: 'MMM-DynamicWebview',
+	module: 'MMM-Webview',
 	position: 'bottom_bar',	// This can be any of the regions.
 	config: {
-		updateInterval: 0.5 * 60 * 1000,
+		updateInterval: 30 * 1000, // rebuild the webview every 30 seconds
 		getURL: () => "http://magicmirror.builders/",
-		attributes: {
-			style: {
-				display: 'flex',
-				width: '100%',
-				height: '600px',
-			},
-			autosize: {
-				minwidth: '100%',
-				minheight: '100%',
-			},
-			nodeintegration: false,
-			plugins: false,
-			preload: '',
-			httpreferrer: '',
-			useragent: '',
-			disablewebsecurity: false,
-			partition: '',
-			allowpopups: false,
-			webpreferences: '',
-			enableblinkfeatures: '',
-			disableblinkfeatures: '',
-		},
+		cssClassname: 'webview',
 	}
 }
 ````
@@ -55,56 +52,32 @@ To use this module, add it to the modules array in the `config/config.js` file:
 ## Configuration options
 
 The following properties can be configured:
-
-
 <table width="100%">
-		<tr>
-			<th>Option</th>
-			<th width="100%">Description</th>
-		</tr>
-		<tr>
-			<td><code>updateInterval</code></td>
-			<td>the update internal for the webview.<br>
-				<br><b>Example for 30 seconds:</b><code>0.5 * 60 * 1000</code>
-				<br><b>Default value:</b> <code>"0.5 * 60 * 1000"</code>
-			</td>
-		</tr>	
-		<tr>
-			<td><code>getURL</code></td>
-			<td>Function that returns the URL used as webview src attribute<br>
-				<br><b>Default value:</b> <code>() => "http://magicmirror.builders/"</code>
-			</td>
-		</tr>		
-		<tr>
-			<td><code>attributes</code></td>
-			<td>See <A href="https://electronjs.org/docs/api/webview-tag">Webview definition</A> for details about these attributes<br>
-
-````javascript
-	attributes: {
-		name: "mirrorBuilders",
-		style: {
-			display: 'flex',
-			width: '100%',
-			height: '600px',
-		},
-		autosize: {
-			minwidth: '100%',
-			minheight: '100%',
-		},
-		nodeintegration: false,
-		plugins: false,
-		preload: '',
-		httpreferrer: '',
-		useragent: '',
-		disablewebsecurity: false,
-		partition: '',
-		allowpopups: false,
-		webpreferences: '',
-		enableblinkfeatures: '',
-		disableblinkfeatures: '',
-	},
-````
-All supported attributes are presented above. The names match those used in electron webview element definition. Empty string, false, null or omitted attributes result in that attribute not being set/used.
-</td>
-</tr>		
+	<tr>
+		<th>Option</th>
+		<th width="100%">Description</th>
+	</tr>
+	<tr>
+		<td><code>updateInterval</code></td>
+		<td>the update internal for the webview.<br>
+			<br><b>Example for 30 seconds:</b><code>30 * 1000</code>
+			<br><b>Default value:</b> <code>"0"</code> (never update; except based on module lifecycle)
+		</td>
+	</tr>	
+	<tr>
+		<td><code>getURL</code></td>
+		<td>Function that returns the URL used as webview src attribute<br>
+			<br><b>Default value:</b> <code>() => "http://magicmirror.builders/"</code>
+		</td>
+	</tr>		
+	<tr>
+		<td><code>cssClassname</code></td>
+		<td>The name of the css definition for this webview.<br>
+			If you created a CSS class definition in ***Custom CSS*** setup step above<br>
+			and its name is not `webview`, and you would like to use it for this webview<br>
+			you should provide that name for this option<br>
+			<br><b>Example using css class definition `webview.fullscreen`:</b><code>'webview.fullscreen'</code>
+			<br><b>Default value:</b> <code>'webview'</code> (no actual assignment as the element name matches the css class name)
+		</td>
+	</tr>		
 </table>
