@@ -44,7 +44,7 @@ To use this module, add it to the modules array in the `config/config.js` file:
 	config: {
 		updateInterval: 30 * 1000, // rebuild the webview every 30 seconds
 		getURL: () => "http://magicmirror.builders/",
-		cssClassname: 'webview',
+		cssClassname: 'yourWebviewCSSDefinitionName',
 	}
 }
 ````
@@ -76,8 +76,36 @@ The following properties can be configured:
 			If you created a CSS class definition in ***Custom CSS*** setup step above<br>
 			and its name is not `webview`, and you would like to use it for this webview<br>
 			you should provide that name for this option<br>
-			<br><b>Example using css class definition `webview.fullscreen`:</b><code>'webview.fullscreen'</code>
 			<br><b>Default value:</b> <code>'webview'</code> (no actual assignment as the element name matches the css class name)
+			<br><b>Example using css class definition `.webviewFullscreen`:</b><code>'.webviewFullscreen'</code>
+			<UL>
+<LI>custom.css
+
+````javascript
+.webviewFullscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90%;
+  height: 100%;
+  margin: 0 0 0 2em;
+  display: inline-flex;
+}
+````
+</LI><LI>config.js:
+
+````javascript
+{
+	module: 'MMM-Webview',
+	position: 'bottom_bar',	// This can be any of the regions.
+	config: {
+		getURL: () => "http://magicmirror.builders/",
+		cssClassname: 'webviewFullscreen', // note: drop leading '.' from definition above
+	}
+}
+````
+		
+</LI></UL>
 		</td>
 	</tr>		
 </table>
