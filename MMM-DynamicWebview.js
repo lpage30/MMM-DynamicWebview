@@ -4,17 +4,6 @@ Module.register('MMM-DynamicWebview', {
 		updateInterval: 30 * 1000,
 		getURL: () => "http://magicmirror.builders/",
 		// see: https://electronjs.org/docs/api/webview-tag
-		attributes: {
-			style: {
-				display: 'flex',
-				width: '100%',
-				height: '600px',
-			},
-			autosize: {
-				minwidth: '100%',
-				minheight: '100%',
-			},
-		},
 	},
 	resume: function() {
 		var self = this;
@@ -54,17 +43,7 @@ Module.register('MMM-DynamicWebview', {
 				webview.setAttribute('minwidth', attributes.autosize.minwidth);
 				webview.setAttribute('minheight', attributes.autosize.minheight);
 			}
-			if (attributes.nodeintegration) webview.setAttribute('nodeintegration', '');
-			if (attributes.plugins) webview.setAttribute('plugins', '');
-			if (attributes.preload) webview.setAttribute('preload', attributes.preload);
-			if (attributes.httpreferrer) webview.setAttribute('httpreferrer', attributes.httpreferrer);
-			if (attributes.useragent) webview.setAttribute('useragent', attributes.useragent);
-			if (attributes.disablewebsecurity) webview.setAttribute('disablewebsecurity', '');
-			if (attributes.partition) webview.setAttribute('partition', attributes.partition);
-			if (attributes.allowpopups) webview.setAttribute('allowpopups', '');
 			if (attributes.webpreferences) webview.setAttribute('webpreferences', attributes.webpreferences);
-			if (attributes.enableblinkfeatures) webview.setAttribute('enableblinkfeatures', attributes.enableblinkfeatures);
-			if (attributes.disableblinkfeatures) webview.setAttribute('disableblinkfeatures', attributes.disableblinkfeatures);
 		}
 		Log.log(`${self.name} ${self.identifier} Webview: ${webview.outerHTML}`);
 		return webview;
