@@ -1,6 +1,3 @@
-/* global Module */
-const config = require('../../config/config');
-
 Module.register('MMM-DynamicWebview', {
 	// Default module config.
 	defaults: {
@@ -30,13 +27,13 @@ Module.register('MMM-DynamicWebview', {
 	},
 	start: function() {
 		var self = this;
-		console.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
+		Log.log(`Starting Dynamic module: ${self.name} ${self.identifier}`);
 		self.intervalId = setInterval(() => self.updateDom(), self.config.updateInterval);
 	},
 		// Override dom generator.
 	getDom: function() {
 		var self = this;
-		console.log(`getDom Dynamic module ${self.name} ${self.identifier}`);
+		Log.log(`getDom Dynamic module ${self.name} ${self.identifier}`);
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', self.config.getURL());
 		if (self.config.attributes) {
@@ -63,7 +60,7 @@ Module.register('MMM-DynamicWebview', {
 			if (attributes.enableblinkfeatures) webview.setAttribute('enableblinkfeatures', attributes.enableblinkfeatures);
 			if (attributes.disableblinkfeatures) webview.setAttribute('disableblinkfeatures', attributes.disableblinkfeatures);
 		}
-		console.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
+		Log.log(`${self.name} ${self.identifier} Webview: ${webview.toString()}`);
 		return webview;
 	},
 });
