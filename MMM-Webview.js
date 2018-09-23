@@ -43,7 +43,7 @@ Module.register('MMM-Webview', {
 	getDom: function () {
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', this.config.getURL());
-		if (this.config.cssClassname) webview.className = this.config.cssClassname;
+		if (this.config.cssClassname) webview.setAttribute('class', this.config.cssClassname);
 		console.log(`getDom: ${this.name}[${this.identifier}]  ${webview.outerHTML}`);
 		return webview;
 	},
