@@ -21,24 +21,26 @@ Module.register('MMM-Webview', {
 		getURL: () => "http://magicmirror.builders/",
 	},
 
-	resume: () => {
+	resume: function () {
 		this.updateDom();
 		startIntervalUpdate(this)
 	},
 
-	suspend: () => stopIntervalUpdate(this),
+	suspend: function () {
+		stopIntervalUpdate(this);
+	},
 
-	start: () => {
+	start: function () {
 		console.log(`Start: ${this.name}[${this.identifier}]`);
 		this.updateDom();
 		startIntervalUpdate(this);
 	},
-	stop: () => {
+	stop: function () {
 		console.log(`Stop: ${this.name}[${this.identifier}]`);
 		stopIntervalUpdate(this)
 	},
 
-	getDom: function() {
+	getDom: function () {
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', this.config.getURL());
 		if (this.config.cssClassname) webview.className = this.config.cssClassname;
