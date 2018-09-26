@@ -1,3 +1,5 @@
+const { PRELOAD_JS } = require('./static/scriptURIs');
+
 const startIntervalUpdate = (theModule) => {
 	if (theModule.config.updateInterval > 0) {
 		console.log(`Starting Interval Updates: ${theModule.name}[${theModule.identifier}] every ${theModule.config.updateInterval} ms`);
@@ -43,6 +45,7 @@ Module.register('MMM-Webview', {
 	getDom: function () {
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', this.config.getURL());
+		webview.setAttribute('preload', PRELOAD_JS);
 		if (this.config.cssClassname) webview.className = this.config.cssClassname;
 		console.log(`getDom: ${this.name}[${this.identifier}]  ${webview.outerHTML}`);
 		return webview;
