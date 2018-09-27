@@ -1,7 +1,6 @@
-const console = window.console;
 const startIntervalUpdate = (theModule) => {
 	if (theModule.config.updateInterval > 0) {
-		console.log(`Starting Interval Updates: ${theModule.name}[${theModule.identifier}] every ${theModule.config.updateInterval} ms`);
+		window.console.log(`Starting Interval Updates: ${theModule.name}[${theModule.identifier}] every ${theModule.config.updateInterval} ms`);
 		theModule.intervalId = setInterval(() => theModule.updateDom(), theModule.config.updateInterval);
 	}
 };
@@ -11,7 +10,7 @@ const stopIntervalUpdate = (theModule) => {
 	theModule.intervalId = null;
 	if (intervalId) {
 		clearInterval(intervalId);
-		console.log(`Stopped Interval Updates: ${theModule.name}[${theModule.identifier}] every ${theModule.config.updateInterval} ms`);
+		window.console.log(`Stopped Interval Updates: ${theModule.name}[${theModule.identifier}] every ${theModule.config.updateInterval} ms`);
 	}
 };
 
@@ -32,12 +31,12 @@ Module.register('MMM-Webview', {
 	},
 
 	start: function () {
-		console.log(`Start: ${this.name}[${this.identifier}]`);
+		window.console.log(`Start: ${this.name}[${this.identifier}]`);
 		this.updateDom();
 		startIntervalUpdate(this);
 	},
 	stop: function () {
-		console.log(`Stop: ${this.name}[${this.identifier}]`);
+		window.console.log(`Stop: ${this.name}[${this.identifier}]`);
 		stopIntervalUpdate(this)
 	},
 
@@ -45,7 +44,7 @@ Module.register('MMM-Webview', {
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', this.config.getURL());
 		if (this.config.cssClassname) webview.className = this.config.cssClassname;
-		console.log(`getDom: ${this.name}[${this.identifier}]  ${webview.outerHTML}`);
+		window.console.log(`getDom: ${this.name}[${this.identifier}]  ${webview.outerHTML}`);
 		return webview;
 	},
 });
