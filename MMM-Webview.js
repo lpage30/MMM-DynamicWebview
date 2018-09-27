@@ -1,4 +1,4 @@
-
+const console = window.console;
 const startIntervalUpdate = (theModule) => {
 	if (theModule.config.updateInterval > 0) {
 		console.log(`Starting Interval Updates: ${theModule.name}[${theModule.identifier}] every ${theModule.config.updateInterval} ms`);
