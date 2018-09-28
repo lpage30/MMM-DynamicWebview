@@ -2,8 +2,19 @@
 IFrames have some security issues (depending on the url used). The [webview](https://github.com/electron/electron/blob/master/docs/api/webview-tag.md), however, does not suffer from these problems as it is rendered separately. So you get iframe behavior in a secure way.  There are several quirks associated with using the webview, but most of these can be overcome, and your MagicMirror will render those pages that could not be rendered using an IFRAME.
 
 ## Setting up to use this Module
-There are a 2 things you will need to do in your overall configuration so you can then render these webview(s).
-1. ***Electron Options***
+There are a 3 things you will need to do in your overall configuration so you can then render these webview(s).
+1. ***Electron version 3.0.0+***
+MagicMirror (at the time of this writing) runs with a much older version of Electron. This version did not result in proper renderings of certain modules with webview modules when applying the electron options settings (next bullet). Here is how you would change your MagicMirror to use this version of electron:
+	- go to your MagicMirror installation directory
+	- remove `rm -rf node_modules` the node_modules directory. This will take a long time, so be patient.
+	- remove `rm package-lock.json` the package lock file.
+	- edit the `package.json` file.
+		- search for `"electron": "^2.0.0",`
+		- replace it with `"electron": "^3.0.0",`
+		- save the file
+	- now reinstall the packages for your MagicMirror: `npm install` This will also take a long time.
+	- DONE
+2. ***Electron Options***
 Referring to the [MagicMirror Configuration](https://github.com/MichMich/MagicMirror#configuration), you will need to add the `nodeIntegration: true` to `electronOptions`.  I am uncertain why this is needed (I have plenty of educated guesses), but if this value is false, things don't render.
 ````javascript
 	electronOptions: {
@@ -15,10 +26,13 @@ Referring to the [MagicMirror Configuration](https://github.com/MichMich/MagicMi
 	*/
 		webPreferences: {
 			zoomFactor: 1, // default is actually zoomFactor: config.zoom, and zoom's default is 1.
-			nodeIntegration: true, // the default for this is false. we are overriding this.
+			nodeIntegration: true, 
+				// the default for this is false. we are overriding this. While it is a security concern,
+				// the webview operates with nodeIntegration: false, 
+				// and this specific use case is controlled by the person configuring it.
 	},
 ````
-2. ***Custom CSS***
+3. ***Custom CSS***
 This is a kinda optional. Things do render without it, but the sizing is all crap. Basically what I am saying here is use CSS to style your webview; do not use the webview inline style. There are PLENTY of references/complaints online about how the webview isn't rendering fully as specified in the inline style. I wanted my entire screen to render as the webview. I finally came across a [reference](https://github.com/electron/electron/issues/8277) that presented a solution that actually worked (I hate css). This CSS did the trick; put this in your MagicMirror custom css `css/custom.css`.
 ````css
 webview {
