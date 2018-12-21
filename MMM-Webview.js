@@ -22,16 +22,19 @@ Module.register('MMM-Webview', {
 	},
 
 	resume: function () {
+		this.render = true;
 		this.updateDom();
 		startIntervalUpdate(this)
 	},
 
 	suspend: function () {
-		stopIntervalUpdate(this);
+		this.render = false;
+		this.updateDom();
 	},
 
 	start: function () {
 //		window.console.log(`Start: ${this.name}[${this.identifier}]`);
+		this.render = !this.hidden;
 		this.updateDom();
 		startIntervalUpdate(this);
 	},
@@ -41,6 +44,9 @@ Module.register('MMM-Webview', {
 	},
 
 	getDom: function () {
+		if (!this.render) {
+			return document.createElement('div');
+		}
 		var webview = document.createElement("webview");
 		webview.setAttribute('src', this.config.getURL());
 		if (this.config.cssClassname) webview.className = this.config.cssClassname;
